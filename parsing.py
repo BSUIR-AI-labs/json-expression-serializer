@@ -21,14 +21,17 @@ def get_priority_operation(expression: str) -> int:
 
 
 def erase_extra_brackets(expression: str) -> str:
-    depth = 0
-    first_bracket = 0
-    while first_bracket < len(expression) and expression[first_bracket] != '(': first_bracket += 1
-    expression_copy = expression[first_bracket:len(expression) - 1]
-    for i in range(len(expression_copy)):
-        if expression_copy[i] == '(': depth += 1
-        if expression_copy[i] == ')': depth -= 1
-    if depth == 0: return expression_copy
+    while len(expression) >= 2 and expression[0] == '(' and expression[-1] == ')':
+        depth = 0
+        wraps = True
+        for i in range(len(expression)):
+            if expression[i] == '(': depth += 1
+            elif expression[i] == ')': depth -= 1
+            if depth == 0 and i != len(expression) - 1:
+                wraps = False
+                break
+        if not wraps: break
+        expression = expression[1:-1]
     return expression
 
 
