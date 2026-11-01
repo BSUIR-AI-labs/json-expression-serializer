@@ -1,4 +1,4 @@
-from validation import make_all_operations, is_number
+from validation import is_number
 
 def get_priority_operation(expression: str) -> int:
     depth = 0
@@ -42,7 +42,6 @@ def valid_element(expression: str) -> any:
 
 def parse_expression(expression: str) -> any:
     if '=' in expression:
-        expression = make_all_operations(expression)
         print(expression)
         left, right = expression.split("=")
         return {"=": [parse_expression(left), parse_expression(right)]}
