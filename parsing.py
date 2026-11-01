@@ -32,7 +32,7 @@ def erase_extra_brackets(expression: str) -> str:
     return expression
 
 
-def valid_element(expression: str) -> any:
+def valid_element(expression: str) -> str:
     if len(expression) == 1 or is_number(expression): return expression
     if expression[0] == '(': expression = expression[1:]
     if expression[len(expression) - 1] == ')': expression = expression[:len(expression) - 1]
@@ -40,18 +40,38 @@ def valid_element(expression: str) -> any:
 
 
 
-def parse_expression(expression: str) -> any:
+def parse_expression(expression: str, depth = 0) -> str:
+    tab = '\t' * depth
+    tab_inner = '\t' * (depth + 1)
     if '=' in expression:
-        print(expression)
         left, right = expression.split("=")
-        return {"=": [parse_expression(left), parse_expression(right)]}
+        left_str = parse_expression(left, depth + 2)
+        right_str = parse_expression(right, depth + 2)
+        return (
+            f'{tab}{{\n'
+            f'{tab_inner}"=": [\n'
+            f'{left_str},\n'
+            f'{right_str}\n'
+            f'{tab_inner}]\n'
+            f'{tab}}}'
+        )
     if get_priority_operation(expression) == -1 and ('(' in expression or ")" in expression):
-        expression = erase_extra_brackets(expression) 
+        expression = erase_extra_brackets(expression)
     operand_index = get_priority_operation(expression)
-    if operand_index == -1: 
-        return valid_element(expression)
-    left, right = expression[:operand_index], expression[operand_index + 1: ] 
-    return {expression[operand_index]: [parse_expression(left), parse_expression(right)]}
+    if operand_index == -1:
+        return tab + f'"{valid_element(expression)}"'
+    op = expression[operand_index]
+    left, right = expression[:operand_index], expression[operand_index + 1:]
+    left_str = parse_expression(left, depth + 2)
+    right_str = parse_expression(right, depth + 2)
+    return (
+        f'{tab}{{\n'
+        f'{tab_inner}"{op}": [\n'
+        f'{left_str},\n'
+        f'{right_str}\n'
+        f'{tab_inner}]\n'
+        f'{tab}}}'
+    )
     
 
 
