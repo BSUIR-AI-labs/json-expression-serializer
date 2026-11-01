@@ -1,0 +1,4 @@
+[output]
+# DEFAULT:
+path = "./output/result.json"
+encoding = "utf-8"
